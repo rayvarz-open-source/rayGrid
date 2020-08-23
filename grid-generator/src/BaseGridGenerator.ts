@@ -1,6 +1,7 @@
-import { GridElement, GridElementAttributes } from "@flmc/grid-element";
 import IElement from "@rayflmc/flmc-lite-renderer/build/flmc-data-layer/FormController/IElement";
 import { ContainerElement } from "@rayflmc/flmc-lite-renderer/build/form/elements/container/ContainerElement";
+import { GridElement } from "@rayflmc/flmc-lite-renderer/build/form/elements/grid/GridElement";
+import * as GridElementAttributes from "@rayflmc/flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
 import { ModalElement } from "@rayflmc/flmc-lite-renderer/build/form/elements/modal/ModalElement";
 import { Action } from "material-table";
 import { BehaviorSubject, Observable } from "rxjs";

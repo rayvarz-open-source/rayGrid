@@ -1,17 +1,25 @@
-import { GridElementAttributes } from '@flmc/grid-element';
-import { combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Schema } from '../../Models/Schema';
-import { Handler } from '../Handlers';
+import * as GridElementAttributes from "@rayflmc/flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
+import { combineLatest } from "rxjs";
+import { map } from "rxjs/operators";
+import { Schema } from "../../Models/Schema";
+import { Handler } from "../Handlers";
 
 export const columnDefinitionHandler: Handler = (props, observables) => {
   const colDefinitionHandler = combineLatest(
     props.controllers.hideColumnModalHiddenFieldsController,
     observables.columnDefinitions
   ).pipe(
-    map(([hiddenFields, [_, schema]]): [GridElementAttributes.ColumnDefinitions<any>, Schema] => {
+    map(([hiddenFields, [_, schema]]): [
+      GridElementAttributes.ColumnDefinitions<any>,
+      Schema
+    ] => {
       const cols = schema.fields
-        .filter((field) => field.isVisible && field.type != null && !hiddenFields.includes(field.fieldName))
+        .filter(
+          (field) =>
+            field.isVisible &&
+            field.type != null &&
+            !hiddenFields.includes(field.fieldName)
+        )
         .sort((current, next) => next.order - current.order)
         .reverse()
         .map((field) => {

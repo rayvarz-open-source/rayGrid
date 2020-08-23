@@ -1,18 +1,23 @@
-import { GridElementAttributes } from '@flmc/grid-element';
-import { combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { FieldSchema, FieldSchemaTypeName } from '../../Models/Field';
-import { Schema } from '../../Models/Schema';
-import { Handler } from '../Handlers';
+import * as GridElementAttributes from "@rayflmc/flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
+import { combineLatest } from "rxjs";
+import { map } from "rxjs/operators";
+import { FieldSchema, FieldSchemaTypeName } from "../../Models/Field";
+import { Schema } from "../../Models/Schema";
+import { Handler } from "../Handlers";
 
 function isExportable(field: FieldSchema) {
   return (
-    field.type.name != FieldSchemaTypeName.Image && field.type.name != FieldSchemaTypeName.ImageList && field.isVisible
+    field.type.name != FieldSchemaTypeName.Image &&
+    field.type.name != FieldSchemaTypeName.ImageList &&
+    field.isVisible
   );
 }
 
 export const exportHandler: Handler = (props, observables) => {
-  const optionsObservable = combineLatest(observables.gridOptions, props.options.noExport).pipe(
+  const optionsObservable = combineLatest(
+    observables.gridOptions,
+    props.options.noExport
+  ).pipe(
     map(([options, noExport]) => {
       return {
         ...options,
@@ -22,7 +27,10 @@ export const exportHandler: Handler = (props, observables) => {
   );
 
   const colDefinitionHandler = observables.columnDefinitions.pipe(
-    map(([cols, schema]): [GridElementAttributes.ColumnDefinitions<any>, Schema] => {
+    map(([cols, schema]): [
+      GridElementAttributes.ColumnDefinitions<any>,
+      Schema
+    ] => {
       const newCols = cols.map((col) => {
         const field = (col as any).fieldDefinition;
         return {

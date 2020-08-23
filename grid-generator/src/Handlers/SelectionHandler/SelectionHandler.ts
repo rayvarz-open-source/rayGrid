@@ -1,7 +1,7 @@
-import { GridElement } from '@flmc/grid-element';
-import { BehaviorSubject, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Handler } from '../Handlers';
+import { GridElement } from "@rayflmc/flmc-lite-renderer/build/form/elements/grid/GridElement";
+import { BehaviorSubject, combineLatest } from "rxjs";
+import { map } from "rxjs/operators";
+import { Handler } from "../Handlers";
 
 export function createUncheckedChangeCallBack<Model>(
   gridElement: GridElement,
@@ -11,7 +11,11 @@ export function createUncheckedChangeCallBack<Model>(
 ): (model: Model, checked: boolean) => void {
   let skipUncheck = false;
   function addSelectedItem(data: Model) {
-    if (!selectedItems.value.map((s) => s[keyFieldName.value]).includes(data[keyFieldName.value])) {
+    if (
+      !selectedItems.value
+        .map((s: any) => s[keyFieldName.value])
+        .includes((data as any)[keyFieldName.value])
+    ) {
       skipUncheck = true;
       selectedItems.next([...selectedItems.value, data]);
     }
@@ -19,20 +23,29 @@ export function createUncheckedChangeCallBack<Model>(
 
   function removeSelectedItem(data: Model) {
     skipUncheck = true;
-    selectedItems.next(selectedItems.value.filter((v) => v[keyFieldName.value] != data[keyFieldName.value]));
+    selectedItems.next(
+      selectedItems.value.filter(
+        (v: any) => v[keyFieldName.value] != (data as any)[keyFieldName.value]
+      )
+    );
   }
 
   // handles select all and select none
-  gridElement.onSelectedChange((data) => {
-    if (data.length === 0) currentPageData.value.forEach((v) => removeSelectedItem(v));
-    else data.forEach((v) => addSelectedItem(v));
+  gridElement.onSelectedChange((data: any) => {
+    if (data.length === 0)
+      currentPageData.value.forEach((v) => removeSelectedItem(v));
+    else data.forEach((v: any) => addSelectedItem(v));
   });
 
   function updateDataManger(model: Model, checked: boolean) {
     const table = gridElement.tableRef;
-    if (table == null) console.warn('gridElement.tableRef is null');
-    table?.dataManager.changeRowSelected(checked, [(model as any).tableData.id]);
-    table?.setState(table.dataManager.getRenderState(), () => table.onSelectionChange(model));
+    if (table == null) console.warn("gridElement.tableRef is null");
+    table?.dataManager.changeRowSelected(checked, [
+      (model as any).tableData.id,
+    ]);
+    table?.setState(table.dataManager.getRenderState(), () =>
+      table.onSelectionChange(model)
+    );
   }
 
   function updateDataManagerStateWithNewValue(value: Model[]) {
@@ -41,9 +54,13 @@ export function createUncheckedChangeCallBack<Model>(
     if (table == null) return;
     table.dataManager.data
       .filter(
-        (v) => v.tableData.checked === true && !value.map((i) => i[keyFieldName.value]).includes(v[keyFieldName.value])
+        (v: any) =>
+          v.tableData.checked === true &&
+          !value
+            .map((i: any) => i[keyFieldName.value])
+            .includes(v[keyFieldName.value])
       )
-      .forEach((item) => updateDataManger(item, false));
+      .forEach((item: any) => updateDataManger(item, false));
   }
 
   selectedItems.subscribe({
@@ -62,7 +79,10 @@ export function createUncheckedChangeCallBack<Model>(
 }
 
 export const selectionHandler: Handler = (props, observables) => {
-  const optionsObservable = combineLatest(observables.gridOptions, props.options.enableSelection).pipe(
+  const optionsObservable = combineLatest(
+    observables.gridOptions,
+    props.options.enableSelection
+  ).pipe(
     map(([options, isSelectionEnabled]) => {
       const onCheckedChanged = createUncheckedChangeCallBack(
         props.elements.grid,
@@ -74,9 +94,9 @@ export const selectionHandler: Handler = (props, observables) => {
         ...options,
         selection: isSelectionEnabled,
         showTextRowsSelected: false,
-        selectionProps: (rowData) => {
+        selectionProps: (rowData: any) => {
           return {
-            onChange: (e) => onCheckedChanged(rowData, e.target.checked),
+            onChange: (e: any) => onCheckedChanged(rowData, e.target.checked),
           };
         },
       };
