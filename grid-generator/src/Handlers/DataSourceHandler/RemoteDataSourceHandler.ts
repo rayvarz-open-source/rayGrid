@@ -36,10 +36,18 @@ export const remoteDataSourceHandler: Handler = (props, observables) => {
       });
     }
 
+    const forceNeedPagination =
+      props.elements.grid.tableRef &&
+      props.elements.grid.tableRef.forcePagination;
     const needPageSize =
-      lastFilters == null || isFilterChanged(lastFilters, filters);
-    lastFilters = filters;
+      forceNeedPagination ||
+      lastFilters == null ||
+      isFilterChanged(lastFilters, filters);
+    if (props.elements.grid.tableRef) {
+      props.elements.grid.tableRef.forcePagination = false;
+    }
 
+    lastFilters = filters;
     const requestFilters = [
       ...filters,
       ...props.controllers.advanceFiltersController.value,

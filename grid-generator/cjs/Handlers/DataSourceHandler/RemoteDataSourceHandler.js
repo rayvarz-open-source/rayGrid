@@ -69,7 +69,7 @@ exports.remoteDataSourceHandler = function (props, observables) {
     var cachedPageSize = 0;
     var lastFilters = null;
     var dataSourceObservable = new rxjs_1.BehaviorSubject(function (query) { return __awaiter(void 0, void 0, void 0, function () {
-        var filters, needPageSize, requestFilters, result, proccessedResult;
+        var filters, forceNeedPagination, needPageSize, requestFilters, result, proccessedResult;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -81,7 +81,14 @@ exports.remoteDataSourceHandler = function (props, observables) {
                             value: query.search,
                         });
                     }
-                    needPageSize = lastFilters == null || materialTableFilterToGridFilter_1.isFilterChanged(lastFilters, filters);
+                    forceNeedPagination = props.elements.grid.tableRef &&
+                        props.elements.grid.tableRef.forcePagination;
+                    needPageSize = forceNeedPagination ||
+                        lastFilters == null ||
+                        materialTableFilterToGridFilter_1.isFilterChanged(lastFilters, filters);
+                    if (props.elements.grid.tableRef) {
+                        props.elements.grid.tableRef.forcePagination = false;
+                    }
                     lastFilters = filters;
                     requestFilters = __spreadArrays(filters, props.controllers.advanceFiltersController.value);
                     return [4 /*yield*/, dataSourceFunction({

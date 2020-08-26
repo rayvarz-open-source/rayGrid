@@ -20,10 +20,14 @@ exports.commandHandler = function (props, observables) {
         .subscribe(function (command) {
         switch (command.name) {
             case Commands_1.GridCommandName.RefreshCurrentPage:
-                props.elements.grid.tableRef && props.elements.grid.tableRef.onQueryChange();
+                if (props.elements.grid.tableRef != null) {
+                    props.elements.grid.tableRef.onQueryChange();
+                    props.elements.grid.tableRef.forcePagination = true;
+                }
                 break;
             case Commands_1.GridCommandName.SetCurrentPage:
-                props.elements.grid.tableRef && props.elements.grid.tableRef.onChangePage(null, parseInt(command.param || 0));
+                props.elements.grid.tableRef &&
+                    props.elements.grid.tableRef.onChangePage(null, parseInt(command.param || 0));
                 break;
         }
     });

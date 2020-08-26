@@ -1,6 +1,6 @@
-import { filter } from 'rxjs/operators';
-import { Handler } from '../Handlers';
-import { GridCommandName } from './Commands';
+import { filter } from "rxjs/operators";
+import { Handler } from "../Handlers";
+import { GridCommandName } from "./Commands";
 
 export const commandHandler: Handler = (props, observables) => {
   props.controllers.commandController
@@ -8,10 +8,17 @@ export const commandHandler: Handler = (props, observables) => {
     .subscribe((command) => {
       switch (command.name) {
         case GridCommandName.RefreshCurrentPage:
-          props.elements.grid.tableRef && props.elements.grid.tableRef.onQueryChange();
+          if (props.elements.grid.tableRef != null) {
+            props.elements.grid.tableRef.onQueryChange();
+            props.elements.grid.tableRef.forcePagination = true;
+          }
           break;
         case GridCommandName.SetCurrentPage:
-          props.elements.grid.tableRef && props.elements.grid.tableRef.onChangePage(null, parseInt(command.param || 0));
+          props.elements.grid.tableRef &&
+            props.elements.grid.tableRef.onChangePage(
+              null,
+              parseInt(command.param || 0)
+            );
           break;
       }
     });
